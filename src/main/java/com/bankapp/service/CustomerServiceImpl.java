@@ -29,9 +29,9 @@ public class CustomerServiceImpl implements CustomerService {
 	}
 	
 	@Transactional
-	public void removeCustomer(Integer id) {
+	public boolean removeCustomer(Integer id) {
 		// TODO Auto-generated method stub
-		customerDAO.removeCustomer(id);
+		return customerDAO.removeCustomer(id);
 	}
 	
 	@Transactional

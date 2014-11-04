@@ -14,14 +14,20 @@ public class TransactionDAOImpl implements TransactionDAO{
 	@Autowired
 	private SessionFactory sessionFactory;
 
-	public void addContact(Transaction transaction) {
+	public void addTransaction(Transaction transaction) {
 		// TODO Auto-generated method stub
-		sessionFactory.getCurrentSession().save(transaction);
+		sessionFactory.getCurrentSession().save(transaction);		
 	}
 
-	public List<Transaction> listContact() {
+	public List<Transaction> listTransaction() {
 		// TODO Auto-generated method stub
 		return sessionFactory.getCurrentSession().createQuery("from Transaction")
+				.list();
+	}
+
+	public List<Transaction> listTransactionByAccount(Integer id) {
+		// TODO Auto-generated method stub
+		return sessionFactory.getCurrentSession().createQuery("from Transaction where bankAcount.id="+id)
 				.list();
 	}
 	

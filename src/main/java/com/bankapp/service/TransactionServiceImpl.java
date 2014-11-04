@@ -2,6 +2,7 @@ package com.bankapp.service;
 
 import java.util.List;
 
+import com.bankapp.dao.BankAccountDAO;
 import com.bankapp.dao.TransactionDAO;
 import com.bankapp.form.Transaction;
 
@@ -14,19 +15,46 @@ import org.springframework.transaction.annotation.Transactional;
 public class TransactionServiceImpl implements TransactionService{
 	
 	@Autowired
-	private TransactionDAO transactionDAO;
+	private TransactionDAO transactionDAO;	
+	
+	@Autowired
+	private BankAccountDAO bankAccountDAO;	
 	
 	@Transactional
-	public void addContact(Transaction transaction) {
+	public boolean addTransaction(Transaction transaction) {
 		// TODO Auto-generated method stub
-		transactionDAO.addContact(transaction);
-		
+		if(transaction.getType().equals("CREDITO")){
+			
+			if(bankAccountDAO.withdraw(transaction.getBankAcount().getId(), transaction.getValue())){
+				transactionDAO.addTransaction(transaction);
+				return true;
+			}
+			else{
+				return false;
+			}
+		}
+		else{
+			if(bankAccountDAO.deposit(transaction.getBankAcount().getId(), transaction.getValue())){
+				transactionDAO.addTransaction(transaction);
+				return true;
+			}
+			else{
+				return false;
+			}
+		}
+			
+	}
+	@Transactional
+	public List<Transaction> listTransaction() {
+		// TODO Auto-generated method stub
+		return transactionDAO.listTransaction();
 	}
 	
 	@Transactional
-	public List<Transaction> listContact() {
+	public List<Transaction> listTransactionByAccount(Integer id) {
 		// TODO Auto-generated method stub
-		return transactionDAO.listContact();
+		return transactionDAO.listTransactionByAccount(id);
+		
 	}
 	
 }

@@ -8,7 +8,7 @@ public interface CustomerService {
 	public void addCustomer(Customer customer);
 	 public List<Customer> listCustomer();
 	 public Customer getCustomer(Integer id);
-	 public void removeCustomer(Integer id);
+	 public boolean removeCustomer(Integer id);
 	public void updatePerson(Customer customer);
 }
 

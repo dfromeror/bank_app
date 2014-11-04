@@ -19,7 +19,7 @@ public class Customer {
 	@Column(name="ID")
     private Integer id;
      
-    @Column(name="NAME")
+    @Column(name="NAME")    
     private String name;
  
     @Column(name="ADDRESS")

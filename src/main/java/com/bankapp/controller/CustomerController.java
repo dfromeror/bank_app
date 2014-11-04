@@ -2,17 +2,21 @@ package com.bankapp.controller;
 
 import java.util.Map;
 
+import javax.servlet.http.HttpSession;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
+
+
+
 
 import com.bankapp.form.Customer;
+import com.bankapp.service.BankAccountService;
 import com.bankapp.service.CustomerService;
 
 
@@ -22,6 +26,9 @@ public class CustomerController {
 
 	@Autowired
 	private CustomerService customerService;
+	
+	@Autowired
+	private BankAccountService bankAccountService;
 
 	@RequestMapping("/customer")
 	public String listCustomers(Map<String, Object> map) {
@@ -29,8 +36,13 @@ public class CustomerController {
 		map.put("customerList", customerService.listCustomer());
 		return "customer";
 	}
-
 	
+	@RequestMapping("/")
+	public String index(Map<String, Object> map) {
+		map.put("customer", new Customer());
+		map.put("customerList", customerService.listCustomer());
+		return "customer";
+	}		
 	
 	@RequestMapping(value="customer/{id}")
 	public String getCustomer(@PathVariable("id")
@@ -42,27 +54,53 @@ public class CustomerController {
 
 	@RequestMapping(value = "customer/add", method = RequestMethod.POST)
 	public String addCustomer(@ModelAttribute("customer")
-	Customer customer, BindingResult result) {	
+	Customer customer, BindingResult result, HttpSession httpSession) {		
+		
+		if(customer.getName().length()==0){
+			httpSession.setAttribute("msgError", "Debe Ingresar su nombre");
+		}
+		else if(customer.getAddress().length()==0){
+			httpSession.setAttribute("msgError", "Debe ingresar su dirección");
+		}
+		else if(customer.getPhone().length()==0){
+			httpSession.setAttribute("msgError", "Debe Ingresar su teléfono");
+		}
+		else{
+			httpSession.setAttribute("msgError", "");
+			if(customer.getId()== null || customer.getId() == 0){
+	            //new person, add it
+				customerService.addCustomer(customer);
+	        }else{
+	            //existing person, call update
+	            customerService.updatePerson(customer);
+	        }	
+			return "redirect:/customer";
+		}
 		
 		if(customer.getId()== null || customer.getId() == 0){
-            //new person, add it
-			customerService.addCustomer(customer);
-        }else{
-            //existing person, call update
-            customerService.updatePerson(customer);
-        }	
-		return "redirect:/customer";
+			return "redirect:/customer";
+		}
+		else{
+			return "redirect:/customer/edit/"+customer.getId();
+			
+		}
+
 	}
 
 	@RequestMapping(value="customer/delete/{id}")	
 	public String deleteCustomer(@PathVariable("id")
-	Integer customerId) {		
-		System.out.println("Delete customer with ID: " + customerId);		
-		customerService.removeCustomer(customerId);
+	Integer customerId, HttpSession httpSession) {		
+		if(customerService.removeCustomer(customerId)){
+			httpSession.setAttribute("msgError", "");			
+		}
+		else{
+			httpSession.setAttribute("msgError", "El cliente no se pudo eliminar porque no exite o porque tiene asociadas una o más cuentas");
+		}
 		return "redirect:/customer";
+		
 	}
 	
-	@RequestMapping("/edit/{id}")
+	@RequestMapping("customer/edit/{id}")
     public String editCustomer(@PathVariable("id") int id, Map<String, Object> map){		
 	
 		System.out.println("Edit customer with ID: " + id);	

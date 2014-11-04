@@ -16,6 +16,9 @@ public class CustomerDAOImpl implements  CustomerDAO {
 	
 	@Autowired
 	private SessionFactory sessionFactory;
+	
+	@Autowired
+	private BankAccountDAO bankAccountDAO;
 
 	public void addCustomer(Customer customer) {
 		// TODO Auto-generated method stub
@@ -29,13 +32,21 @@ public class CustomerDAOImpl implements  CustomerDAO {
 				.list();		
 	}
 
-	public void removeCustomer(Integer id) {
+	public boolean removeCustomer(Integer id) {
 		// TODO Auto-generated method stub
 		Customer customer=(Customer) sessionFactory.getCurrentSession().load(Customer.class, id);
-		if (null != customer) {
-			sessionFactory.getCurrentSession().delete(customer);
+		if(null != customer){
+			if(bankAccountDAO.listBankAccountByCustomer(customer).size()>0){
+				return false;
+			}
+			else{
+				sessionFactory.getCurrentSession().delete(customer);
+				return true;
+			}
 		}
-		
+		else{
+			return false;
+		}		
 	}
 
 	public Customer getCustomer(Integer id) {
