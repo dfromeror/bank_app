@@ -31,16 +31,18 @@ public class CustomerController {
 	private BankAccountService bankAccountService;
 
 	@RequestMapping("/customer")
-	public String listCustomers(Map<String, Object> map) {
+	public String listCustomers(Map<String, Object> map, HttpSession httpSession) {
 		map.put("customer", new Customer());
 		map.put("customerList", customerService.listCustomer());
+		httpSession.setAttribute("msgError", "");
 		return "customer";
 	}
 	
 	@RequestMapping("/")
-	public String index(Map<String, Object> map) {
+	public String index(Map<String, Object> map, HttpSession httpSession) {
 		map.put("customer", new Customer());
 		map.put("customerList", customerService.listCustomer());
+		httpSession.setAttribute("msgError", "");
 		return "customer";
 	}		
 	

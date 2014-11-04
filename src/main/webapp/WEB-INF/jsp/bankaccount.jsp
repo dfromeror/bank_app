@@ -43,7 +43,7 @@ String msgError = (String) sessionsa.getAttribute("msgError");
 
 
 
-<div id="div_one_customer" style="display=none;">
+<div id="div_one_customer">
 
 
 <c:url var="addAction" value="/bankaccount/add" ></c:url> 
@@ -110,14 +110,5 @@ String msgError = (String) sessionsa.getAttribute("msgError");
 
 
 </body>
-<script>
-function view_div_customers() {
-    document.getElementById("div_one_customer").style.display = "none";
-    document.getElementById("div_customers").style.display = "block";
-}
-function view_div_one_customer() {
-    document.getElementById("div_customers").style.display = "none";
-    document.getElementById("div_one_customer").style.display = "block";
-}
-</script>
+
 </html>

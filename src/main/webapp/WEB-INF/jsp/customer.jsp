@@ -32,10 +32,13 @@ pageEncoding="ISO-8859-1" session="false"%>
 
 <%
 HttpSession sessionsa = request.getSession(false);
-String msgError = (String) sessionsa.getAttribute("msgError");
+String msgError="";
+if ((String) sessionsa.getAttribute("msgError")!=null){
+	msgError = (String) sessionsa.getAttribute("msgError");
+}
 %>
 
-<div id="div_one_customer" style="display=none;">
+<div id="div_one_customer">
 <div style="background-color:#CD5D5D">
 	<% if (msgError!= null && msgError.length()>0){
 		out.println("<h4>"+msgError+"</h4>");		  

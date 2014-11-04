@@ -34,7 +34,7 @@ public class TransactionController {
 		BankAccount bankAccount= bankAccountService.getBankAccount(id);
 		httpSession.setAttribute("id_transaction", id);		
 		//customerParent=customer;
-		map.put("transaction", new Transaction());	
+		map.put("transaction", new Transaction());		
 		map.put("bankAccount",bankAccount);	
 		map.put("transactionList", transactionService.listTransactionByAccount(id));
 		return "transactions";
