@@ -21,27 +21,25 @@ public class TransactionServiceImpl implements TransactionService{
 	private BankAccountDAO bankAccountDAO;	
 	
 	@Transactional
-	public boolean addTransaction(Transaction transaction) {
-		// TODO Auto-generated method stub
-		if(transaction.getType().equals("CREDITO")){
-			
-			if(bankAccountDAO.withdraw(transaction.getBankAcount().getId(), transaction.getValue())){
-				transactionDAO.addTransaction(transaction);
-				return true;
-			}
-			else{
-				return false;
-			}
-		}
-		else{
-			if(bankAccountDAO.deposit(transaction.getBankAcount().getId(), transaction.getValue())){
-				transactionDAO.addTransaction(transaction);
-				return true;
-			}
-			else{
-				return false;
-			}
-		}
+        public boolean addTransaction(Transaction transaction) {
+                // TODO Auto-generated method stub
+                if (transaction.getType().equals("CREDITO")) {
+                        // A credit should increase the account balance
+                        if (bankAccountDAO.deposit(transaction.getBankAcount().getId(), transaction.getValue())) {
+                                transactionDAO.addTransaction(transaction);
+                                return true;
+                        } else {
+                                return false;
+                        }
+                } else {
+                        // A debit should decrease the account balance
+                        if (bankAccountDAO.withdraw(transaction.getBankAcount().getId(), transaction.getValue())) {
+                                transactionDAO.addTransaction(transaction);
+                                return true;
+                        } else {
+                                return false;
+                        }
+                }
 			
 	}
 	@Transactional
